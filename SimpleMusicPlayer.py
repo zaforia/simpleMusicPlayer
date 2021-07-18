@@ -157,8 +157,12 @@ class clock:
             self.time_start = 0
             self.zeroflag = 1
 
-            
+
         if self.pause_flag == 0 and self.zeroflag == 1:
+            self.msintimer += 1
+            
+        if self.pause_flag == 0 and self.zeroflag == 1 and self.msintimer >= 8:
+            self.msintimer = 0
             self.time_start += 1
             
         if self.time_start >= 60 and self.pause_flag == 0:
@@ -170,7 +174,7 @@ class clock:
             self.pause_flag = 0
 
         if pygame.mixer.get_busy:
-            self.id = self.root.after(1000, self.time_counter)
+            self.id = self.root.after(125, self.time_counter)
 
         self.update()
 
@@ -194,6 +198,8 @@ class clock:
         self.zeroflag = 0
         self.time_start = 0
         self.min = 0
+        self.msintimer = 0
+
         self.mes = mes
         self.listbox = listbox
         self.entries = entries
@@ -208,6 +214,7 @@ class clock:
     def pause(self):
         self.nowmin = self.min
         self.nowtime = self.time_start
+        self.nowmsintimer = self.msintimer
         self.root.after_cancel(self.id)
      
 
@@ -215,6 +222,7 @@ class clock:
         self.pause_flag = 1
         self.min = self.nowmin
         self.time_start = self.nowtime
+        self.msintimer = self.nowmsintimer
         self.time_counter()
 
     def stop(self):
